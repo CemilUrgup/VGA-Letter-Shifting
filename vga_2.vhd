@@ -1,27 +1,27 @@
 ----------------------------- VGA.vhd --------------------------------
---                         Bertan Taşkın
+--                         Bertan TaÃ¾kÃ½n
 --                           4.10.2017
 --                          Versiyon 2.0
 --
--- VGA kontrolcüsü. Zamanlama parametreleri generic kısmından ayarlanabilir.
+-- VGA kontrolcÃ¼sÃ¼. Zamanlama parametreleri generic kÃ½smÃ½ndan ayarlanabilir.
 -- BufferAddress sinyali o anki pixelin buffer'daki adresini belirtir.
 -- BufferAddress belirtildikten 1 cycle sonra BufferData'dan veriler okunur.
 --
 --
--- Versiyon Notları:
+-- Version Notes
 --
--- Versiyon 1.0 (23.4.2017): İlk sürüm.
+-- Versiyon 1.0 (23.4.2017): Ãlk sÃ¼rÃ¼m.
 --
--- Versiyon 2.0 (4.10.2017): HSync ve VSync'deki zamanlama hataları
---  düzeltildi.
---      Zamanlama parametreleri generic kısmına taşındı.
---    DE(Data Enabe) çıkışı eklendi.
---    BufferAddress(eski X, Y) ile BufferData(eski R, G, B) arasına
+-- Versiyon 2.0 (4.10.2017): HSync ve VSync'deki zamanlama hatalarÃ½
+--  dÃ¼zeltildi.
+--      Zamanlama parametreleri generic kÃ½smÃ½na taÃ¾Ã½ndÃ½.
+--    DE(Data Enabe) Ã§Ã½kÃ½Ã¾Ã½ eklendi.
+--    BufferAddress(eski X, Y) ile BufferData(eski R, G, B) arasÃ½na
 --    1 cycle eklendi.
---    Kod daha sade bir şekilde tekrar yazıldı.
+--    Kod daha sade bir Ã¾ekilde tekrar yazÃ½ldÃ½.
 --
  
---Kütüphaneler
+--KÃ¼tÃ¼phaneler
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 USE ieee.numeric_std.ALL; 
@@ -38,7 +38,7 @@ entity VGA is
         HorizontalSyncPolarity : std_logic := '1';   --Sync Polariteleri
         VerticalSyncPolarity : std_logic := '1';
         RGBLength : integer := 4);                                                                                    
-    port(PixelClk, Enable : in std_logic;             --Pixel Clock ve Enable Girişi
+    port(PixelClk, Enable : in std_logic;             --Pixel Clock ve Enable GiriÃ¾i
         red_0: out std_logic := '0';
         red_1: out std_logic := '0';
         red_2: out std_logic := '0';
@@ -50,12 +50,12 @@ entity VGA is
         green_0: out std_logic := '0';
         green_1: out std_logic := '0';
         green_2: out std_logic := '0';
-        green_3  : out std_logic;        --RGB Çıkışları
-        HSync, VSync : out std_logic := '0'                               --HSync ve VSync Çıkışı
---        DE : out std_logic;                                            --Data Enable Çıkışı
---        BufferAddress : out std_logic_vector(31 downto 0);             --Buffer Address Çıkışı
+        green_3  : out std_logic;        --RGB Ã‡Ã½kÃ½Ã¾larÃ½
+        HSync, VSync : out std_logic := '0'                               --HSync ve VSync Ã‡Ã½kÃ½Ã¾Ã½
+--        DE : out std_logic;                                            --Data Enable Ã‡Ã½kÃ½Ã¾Ã½
+--        BufferAddress : out std_logic_vector(31 downto 0);             --Buffer Address Ã‡Ã½kÃ½Ã¾Ã½
 --        BufferData : in std_logic_vector(RGBLength * 3 - 1 downto 0)
-        ); --Buffer Data Girişi
+        ); --Buffer Data GiriÃ¾i
 end VGA;
  
 architecture Behavioral of VGA is
@@ -90,7 +90,7 @@ architecture Behavioral of VGA is
      
 begin
  
-    --BufferAddress'in hesaplanması
+    --BufferAddress'in hesaplanmasÃ½
 --    BufferAddress <= std_logic_vector(to_unsigned(VCount * HorizontalVisibleArea + HCount, 32));
      
 process(PixelClk, slow_clk)
@@ -242,11 +242,11 @@ end if;
         
         if Enable = '1' then
              
-            --HCount arttırılır
+            --HCount arttÃ½rÃ½lÃ½r
             if HCount < HorizontalWholeLine - 1 then
                 HCount <= HCount + 1;
             else
-                --HCount sona ulaştığında resetlenir ve VCount arttırılır
+                --HCount sona ulaÃ¾tÃ½Ã°Ã½nda resetlenir ve VCount arttÃ½rÃ½lÃ½r
                 HCount <= 0;
                 if VCount < VerticalWholeLine - 1 then
                     VCount <= VCount + 1;
@@ -255,7 +255,7 @@ end if;
                 end if;
             end if; 
              
-            --HCount visible area içindeyse HVisible setlenir
+            --HCount visible area iÃ§indeyse HVisible setlenir
             if HCount < HorizontalVisibleArea then
                 HPulse <= '0';
                 HVisible <= '1';
@@ -263,7 +263,7 @@ end if;
                                 HorizontalFrontPorch then
                 HPulse <= '0';
                 HVisible <= '0';
-            --HCount pulse alanı içindeyse HPulse setlenir.
+            --HCount pulse alanÃ½ iÃ§indeyse HPulse setlenir.
             elsif HCount < HorizontalVisibleArea +
                                 HorizontalFrontPorch +
                                 HorizontalSyncPulse then
@@ -274,7 +274,7 @@ end if;
                 HVisible <= '0';
             end if;
              
-            --VCount visible area içindeyse VVisible setlenir
+            --VCount visible area iÃ§indeyse VVisible setlenir
             if VCount < VerticalVisibleArea then
                 VPulse <= '0';
                 VVisible <= '1';
@@ -282,7 +282,7 @@ end if;
                                 VerticalFrontPorch then
                 VPulse <= '0';
                 VVisible <= '0';
-            --VCount pulse alanı içindeyse VPulse setlenir.
+            --VCount pulse alanÃ½ iÃ§indeyse VPulse setlenir.
             elsif VCount < VerticalVisibleArea +
                                 VerticalFrontPorch +
                                 VerticalSyncPulse then
@@ -293,21 +293,21 @@ end if;
                 VVisible <= '0';
             end if; 
              
-            --Horizontal pulse üretimi
+            --Horizontal pulse Ã¼retimi
             if HPulse = '1' then
                 HSync <= HorizontalSyncPolarity;
             else
                 HSync <= not HorizontalSyncPolarity;
             end if;
              
-            --Vertical pulse üretimi
+            --Vertical pulse Ã¼retimi
             if VPulse = '1' then
                 VSync <= VerticalSyncPolarity;
             else
                 VSync <= not VerticalSyncPolarity;
             end if;
                      
-            --Her iki yönde de visible alan içindeyse RGB sinyalleri gönderilir ve
+            --Her iki yÃ¶nde de visible alan iÃ§indeyse RGB sinyalleri gÃ¶nderilir ve
             --Data Enable setlenir
             if HVisible = '1' and VVisible = '1' then      
                 Red <= unsigned(BufferData(RGBLength * 3 - 1 downto RGBLength * 2));
@@ -326,7 +326,7 @@ end if;
                 green_2 <= Green(2);
                 green_3 <= Green(3);
 --                DE <= '1';
-            --Her iki yönde en az biri visible alan dışındaysa RGB ve Data Enable
+            --Her iki yÃ¶nde en az biri visible alan dÃ½Ã¾Ã½ndaysa RGB ve Data Enable
             --resetlenir
             else           
                 Red <= to_unsigned(0, RGBLength);
